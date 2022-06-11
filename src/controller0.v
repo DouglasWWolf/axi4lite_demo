@@ -119,8 +119,11 @@ module controller0#
     //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
     localparam AXI_ADDR_GPIO_LED = 32'h4000_0000;
-
-    reg[3:0] state;
+    localparam AXI_ADDR_SW_LED   = 32'h4001_0000;
+    localparam LED_BITS          = 3;
+    
+    reg[ 3:0] state;
+    reg[ 4:0] blink_count;
     reg[31:0] counter;
     
     always @(posedge CLK) begin
@@ -129,24 +132,39 @@ module controller0#
         if (counter) counter <= counter - 1;
 
         if (RESETN == 0) begin
-            state   <= 0;
-            counter <= 0;
+            state <= 0;
         end else case(state)
 
         0:  if (BUTTON) begin
-                amci_waddr <= AXI_ADDR_GPIO_LED;
-                amci_wdata <= 15;
-                amci_write <= 1;
-                counter    <= CLOCK_FREQ;
+                amci_raddr <= AXI_ADDR_GPIO_SW;
+                amci_read  <= 1;
                 state      <= state + 1;
             end
 
-        1:  if (counter == 0) begin
-                amci_waddr <= AXI_ADDR_GPIO_LED;
-                amci_wdata <= 0;
-                amci_write <= 1;
-                state      <= 0;
+        1:  if (amci_ridle) begin
+                blink_count <= amci_rdata + 1;
+                counter     <= 0;
+                state       <= state + 1;
             end
+        
+        2:  if (counter == 0) begin
+                amci_waddr <= AXI_ADDR_GPIO_LED;
+                amci_wdata <= LED_BITS;
+                amci_write <= 1;
+                counter    <= CLOCK_FREQ / 10;
+                state      <= state + 1;
+            end
+
+        3:  if (counter == 0) begin
+                amci_waddr  <= AXI_ADDR_GPIO_LED;
+                amci_wdata  <= 0;
+                amci_write  <= 1;
+                counter     <= CLOCK_FREQ / 10;
+                state       <= (blink_count == 1) ? state-1 : state+1;
+                blink_count <= blink_count - 1;
+            end
+
+        4:  state <= 0;
 
         endcase
     end
