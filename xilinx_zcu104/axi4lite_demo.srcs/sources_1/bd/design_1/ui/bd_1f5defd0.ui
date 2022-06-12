@@ -33,14 +33,14 @@ preplace netloc axi_gpio_0_gpio_io_o 1 6 1 NJ 500
 preplace netloc axi_uartlite_0_tx 1 6 1 NJ 360
 preplace netloc button_0_Q 1 2 1 650 340n
 preplace netloc button_0_Q1 1 3 1 N 120
+preplace netloc clk_in1_n_0_1 1 0 1 NJ 140
+preplace netloc clk_in1_p_0_1 1 0 1 NJ 160
 preplace netloc controller_0_AMCI_MOSI 1 3 1 N 300
 preplace netloc ext_reset_in_0_1 1 0 2 NJ 420 NJ
 preplace netloc gpio_io_i_0_1 1 0 6 NJ 220 NJ 220 NJ 220 NJ 220 1230J 100 1510J
 preplace netloc system_clock_clk100mhz 1 1 5 260 160 630 240 950 400 1230 540 1510
 preplace netloc system_reset_interconnect_aresetn 1 2 3 N 420 NJ 420 NJ
 preplace netloc system_reset_peripheral_aresetn 1 2 4 630 400 930 560 NJ 560 1530
-preplace netloc clk_in1_n_0_1 1 0 1 NJ 140
-preplace netloc clk_in1_p_0_1 1 0 1 NJ 160
 preplace netloc axi4lite_standalone_master_M_AXI 1 4 1 N 280
 preplace netloc axi_interconnect_M02_AXI 1 5 1 N 340
 preplace netloc controller1_0_M_AXI 1 4 1 N 160
@@ -50,7 +50,7 @@ levelinfo -pg 1 0 140 450 790 1090 1370 1670 1830
 pagesize -pg 1 -db -bbox -sgen -150 0 1990 600
 ",
    "No Loops_ScaleFactor":"0.525082",
-   "No Loops_TopLeft":"-149,-185",
+   "No Loops_TopLeft":"-149,-181",
    "Reduced Jogs_ScaleFactor":"0.494263",
    "Reduced Jogs_TopLeft":"-142,-370",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
