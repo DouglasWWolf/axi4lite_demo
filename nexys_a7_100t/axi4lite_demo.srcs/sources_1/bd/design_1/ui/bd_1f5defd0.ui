@@ -1,7 +1,7 @@
 {
    "ActiveEmotionalView":"No Loops",
-   "Default View_ScaleFactor":"0.510018",
-   "Default View_TopLeft":"-141,-378",
+   "Default View_ScaleFactor":"0.634709",
+   "Default View_TopLeft":"-150,-269",
    "DisplayTieOff":"1",
    "ExpandedHierarchyInLayout":"",
    "No Loops_ExpandedHierarchyInLayout":"",
@@ -20,11 +20,11 @@ preplace inst axi_interconnect -pg 1 -lvl 5 -x 1330 -y 100 -swap {20 1 2 3 4 5 6
 preplace inst axi_gpio_leds -pg 1 -lvl 6 -x 1630 -y 420 -defaultsOSRD -pinDir S_AXI left -pinY S_AXI 0L -pinDir GPIO right -pinY GPIO 0R -pinDir GPIO.gpio_io_o right -pinY GPIO.gpio_io_o 20R -pinDir s_axi_aclk left -pinY s_axi_aclk 20L -pinDir s_axi_aresetn left -pinY s_axi_aresetn 40L
 preplace inst up_button -pg 1 -lvl 2 -x 410 -y 460 -defaultsOSRD -pinDir CLK left -pinY CLK 0L -pinDir PIN left -pinY PIN 20L -pinDir Q right -pinY Q 0R
 preplace inst axi_gpio_switches -pg 1 -lvl 6 -x 1630 -y 100 -defaultsOSRD -pinDir S_AXI left -pinY S_AXI 0L -pinDir GPIO left -pinY GPIO 20L -pinDir GPIO.gpio_io_i left -pinY GPIO.gpio_io_i 40L -pinDir s_axi_aclk left -pinY s_axi_aclk 60L -pinDir s_axi_aresetn left -pinY s_axi_aresetn 80L
+preplace inst axi_uart -pg 1 -lvl 6 -x 1630 -y 280 -defaultsOSRD -pinDir S_AXI left -pinY S_AXI 0L -pinDir UART right -pinY UART 0R -pinDir UART.tx right -pinY UART.tx 20R -pinDir s_axi_aclk left -pinY s_axi_aclk 20L -pinDir s_axi_aresetn left -pinY s_axi_aresetn 40L -pinDir interrupt right -pinY interrupt 40R
 preplace inst axi4lite_standalone_master -pg 1 -lvl 4 -x 1050 -y 220 -swap {0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 21 22 20 23} -defaultsOSRD -pinDir M_AXI right -pinY M_AXI 0R -pinBusDir AMCI_MOSI left -pinBusY AMCI_MOSI 20L -pinBusDir AMCI_MISO left -pinBusY AMCI_MISO 40L -pinDir M_AXI_ACLK left -pinY M_AXI_ACLK 0L -pinDir M_AXI_ARESETN left -pinY M_AXI_ARESETN 60L
 preplace inst controller_0 -pg 1 -lvl 3 -x 750 -y 240 -defaultsOSRD -pinDir CLK left -pinY CLK 0L -pinDir RESETN left -pinY RESETN 20L -pinDir BUTTON left -pinY BUTTON 40L -pinBusDir AMCI_MOSI right -pinBusY AMCI_MOSI 0R -pinBusDir AMCI_MISO right -pinBusY AMCI_MISO 20R
 preplace inst down_button -pg 1 -lvl 3 -x 750 -y 60 -swap {1 0 2} -defaultsOSRD -pinDir CLK left -pinY CLK 40L -pinDir PIN left -pinY PIN 0L -pinDir Q right -pinY Q 0R
 preplace inst controller_1 -pg 1 -lvl 4 -x 1050 -y 60 -defaultsOSRD -pinDir M_AXI right -pinY M_AXI 40R -pinDir BUTTON left -pinY BUTTON 0L -pinDir M_AXI_ACLK left -pinY M_AXI_ACLK 20L -pinDir M_AXI_ARESETN left -pinY M_AXI_ARESETN 40L
-preplace inst axi_uart -pg 1 -lvl 6 -x 1630 -y 280 -defaultsOSRD -pinDir S_AXI left -pinY S_AXI 0L -pinDir UART right -pinY UART 0R -pinDir UART.tx right -pinY UART.tx 20R -pinDir s_axi_aclk left -pinY s_axi_aclk 20L -pinDir s_axi_aresetn left -pinY s_axi_aresetn 40L -pinDir interrupt right -pinY interrupt 40R
 preplace netloc PIN_0_1 1 0 2 NJ 480 NJ
 preplace netloc axi4_lite_master_0_AMCI_MISO 1 3 1 N 260
 preplace netloc axi_gpio_0_gpio_io_o 1 6 1 NJ 440
@@ -47,21 +47,94 @@ preplace netloc controller1_0_M_AXI 1 4 1 N 100
 levelinfo -pg 1 0 120 410 750 1050 1330 1630 1790
 pagesize -pg 1 -db -bbox -sgen -150 0 1950 540
 ",
-   "No Loops_ScaleFactor":"0.634974",
-   "No Loops_TopLeft":"-150,-153",
-   "Reduced Jogs_ScaleFactor":"0.494263",
-   "Reduced Jogs_TopLeft":"-142,-370",
+   "No Loops_ScaleFactor":"0.68323",
+   "No Loops_TopLeft":"-149,-227",
+   "Reduced Jogs_ExpandedHierarchyInLayout":"",
+   "Reduced Jogs_Layout":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+#  -string -flagsOSRD
+preplace port port-id_CLK100MHZ -pg 1 -lvl 0 -x 0 -y 120 -defaultsOSRD
+preplace port port-id_CPU_RESETN -pg 1 -lvl 0 -x 0 -y 340 -defaultsOSRD
+preplace port port-id_GPIO_BTNU -pg 1 -lvl 0 -x 0 -y 180 -defaultsOSRD
+preplace port port-id_UART_TXD -pg 1 -lvl 7 -x 1970 -y 500 -defaultsOSRD
+preplace port port-id_GPIO_BTND -pg 1 -lvl 0 -x 0 -y 60 -defaultsOSRD
+preplace portBus GPIO_LED -pg 1 -lvl 7 -x 1970 -y 200 -defaultsOSRD
+preplace portBus GPIO_SW -pg 1 -lvl 0 -x 0 -y 240 -defaultsOSRD
+preplace inst system_clock -pg 1 -lvl 1 -x 120 -y 120 -defaultsOSRD -pinY clk_in1 0L -pinY clk100mhz 0R
+preplace inst system_reset -pg 1 -lvl 2 -x 410 -y 320 -swap {0 1 2 3 4 5 6 7 9 8} -defaultsOSRD -pinY slowest_sync_clk 0L -pinY ext_reset_in 20L -pinY aux_reset_in 40L -pinY mb_debug_sys_rst 60L -pinY dcm_locked 80L -pinY mb_reset 0R -pinBusY bus_struct_reset 20R -pinBusY peripheral_reset 40R -pinBusY interconnect_aresetn 180R -pinBusY peripheral_aresetn 60R
+preplace inst axi_interconnect -pg 1 -lvl 5 -x 1490 -y 180 -swap {20 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 0 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101} -defaultsOSRD -pinY S00_AXI 180L -pinY S01_AXI 0L -pinY M00_AXI 0R -pinY M01_AXI 160R -pinY M02_AXI 300R -pinY aclk 300L -pinY aresetn 320L
+preplace inst axi_gpio_leds -pg 1 -lvl 6 -x 1810 -y 180 -defaultsOSRD -pinY S_AXI 0L -pinY GPIO 0R -pinY GPIO.gpio_io_o 20R -pinY s_axi_aclk 20L -pinY s_axi_aresetn 40L
+preplace inst up_button -pg 1 -lvl 2 -x 410 -y 160 -defaultsOSRD -pinY CLK 0L -pinY PIN 20L -pinY Q 20R
+preplace inst axi_gpio_switches -pg 1 -lvl 6 -x 1810 -y 340 -defaultsOSRD -pinY S_AXI 0L -pinY GPIO 0R -pinY GPIO.gpio_io_i 20R -pinY s_axi_aclk 20L -pinY s_axi_aresetn 40L
+preplace inst axi_uart -pg 1 -lvl 6 -x 1810 -y 480 -defaultsOSRD -pinY S_AXI 0L -pinY UART 0R -pinY UART.tx 20R -pinY s_axi_aclk 20L -pinY s_axi_aresetn 40L -pinY interrupt 40R
+preplace inst axi4lite_standalone_master -pg 1 -lvl 4 -x 1180 -y 360 -defaultsOSRD -pinY M_AXI 0R -pinBusY AMCI_MOSI 0L -pinBusY AMCI_MISO 40R -pinY M_AXI_ACLK 20L -pinY M_AXI_ARESETN 40L
+preplace inst controller_0 -pg 1 -lvl 3 -x 820 -y 300 -swap {1 2 0 3 4} -defaultsOSRD -pinY CLK 20L -pinY RESETN 40L -pinY BUTTON 0L -pinBusY AMCI_MOSI 60R -pinBusY AMCI_MISO 60L
+preplace inst down_button -pg 1 -lvl 3 -x 820 -y 60 -swap {1 0 2} -defaultsOSRD -pinY CLK 120L -pinY PIN 0L -pinY Q 80R
+preplace inst controller_1 -pg 1 -lvl 4 -x 1180 -y 140 -defaultsOSRD -pinY M_AXI 40R -pinY BUTTON 0L -pinY M_AXI_ACLK 20L -pinY M_AXI_ARESETN 40L
+preplace netloc PIN_0_1 1 0 2 NJ 180 NJ
+preplace netloc axi4_lite_master_0_AMCI_MISO 1 2 3 650 460 NJ 460 1350
+preplace netloc axi_gpio_0_gpio_io_o 1 6 1 NJ 200
+preplace netloc axi_uartlite_0_tx 1 6 1 NJ 500
+preplace netloc button_0_Q 1 2 1 590 180n
+preplace netloc clk_in1_0_1 1 0 1 NJ 120
+preplace netloc controller_0_AMCI_MOSI 1 3 1 N 360
+preplace netloc ext_reset_in_0_1 1 0 2 NJ 340 NJ
+preplace netloc gpio_io_i_0_1 1 0 7 NJ 240 NJ 240 NJ 240 NJ 240 1350J 120 1650J 280 1950
+preplace netloc system_clock_clk100mhz 1 1 5 220 260 610 420 990 480 1350 560 1630
+preplace netloc system_reset_interconnect_aresetn 1 2 3 NJ 500 NJ 500 N
+preplace netloc system_reset_peripheral_aresetn 1 2 4 630 440 1010 580 NJ 580 1670
+preplace netloc button_0_Q1 1 3 1 N 140
+preplace netloc PIN_0_2 1 0 3 NJ 60 NJ 60 NJ
+preplace netloc axi4lite_standalone_master_M_AXI 1 4 1 N 360
+preplace netloc axi_interconnect_M02_AXI 1 5 1 N 480
+preplace netloc smartconnect_0_M00_AXI 1 5 1 N 180
+preplace netloc smartconnect_0_M01_AXI 1 5 1 N 340
+preplace netloc controller1_0_M_AXI 1 4 1 N 180
+levelinfo -pg 1 0 120 410 820 1180 1490 1810 1970
+pagesize -pg 1 -db -bbox -sgen -150 0 2130 590
+",
+   "Reduced Jogs_ScaleFactor":"0.629125",
+   "Reduced Jogs_TopLeft":"-149,-245",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
 #  -string -flagsOSRD
-preplace port port-id_CLK100MHZ -pg 1 -lvl 0 -x 0 -y 60 -defaultsOSRD
-preplace port port-id_reset -pg 1 -lvl 0 -x 0 -y 120 -defaultsOSRD
-preplace inst system_clock -pg 1 -lvl 1 -x 120 -y 60 -defaultsOSRD
-preplace inst proc_sys_reset_0 -pg 1 -lvl 2 -x 410 -y 100 -defaultsOSRD
-preplace netloc clk_in1_0_1 1 0 1 NJ 60
-preplace netloc reset_1 1 0 2 NJ 120 220J
-preplace netloc system_clock_clk100mhz 1 1 1 NJ 60
-levelinfo -pg 1 0 120 410 600
-pagesize -pg 1 -db -bbox -sgen -140 0 600 200
+preplace port port-id_CLK100MHZ -pg 1 -lvl 0 -x 0 -y 200 -defaultsOSRD
+preplace port port-id_CPU_RESETN -pg 1 -lvl 0 -x 0 -y 430 -defaultsOSRD
+preplace port port-id_GPIO_BTNU -pg 1 -lvl 0 -x 0 -y 260 -defaultsOSRD
+preplace port port-id_UART_TXD -pg 1 -lvl 7 -x 1950 -y 400 -defaultsOSRD
+preplace port port-id_GPIO_BTND -pg 1 -lvl 0 -x 0 -y 60 -defaultsOSRD
+preplace portBus GPIO_LED -pg 1 -lvl 7 -x 1950 -y 100 -defaultsOSRD
+preplace portBus GPIO_SW -pg 1 -lvl 0 -x 0 -y 320 -defaultsOSRD
+preplace inst system_clock -pg 1 -lvl 1 -x 120 -y 200 -defaultsOSRD
+preplace inst system_reset -pg 1 -lvl 2 -x 410 -y 430 -swap {0 2 1 3 4 5 6 7 9 8} -defaultsOSRD
+preplace inst axi_interconnect -pg 1 -lvl 5 -x 1480 -y 260 -swap {20 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 0 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 80 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 40 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 60 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101} -defaultsOSRD
+preplace inst axi_gpio_leds -pg 1 -lvl 6 -x 1790 -y 90 -defaultsOSRD
+preplace inst up_button -pg 1 -lvl 2 -x 410 -y 250 -defaultsOSRD
+preplace inst axi_gpio_switches -pg 1 -lvl 6 -x 1790 -y 260 -defaultsOSRD
+preplace inst axi_uart -pg 1 -lvl 6 -x 1790 -y 400 -defaultsOSRD
+preplace inst axi4lite_standalone_master -pg 1 -lvl 4 -x 1150 -y 260 -defaultsOSRD
+preplace inst controller_0 -pg 1 -lvl 3 -x 790 -y 240 -defaultsOSRD
+preplace inst down_button -pg 1 -lvl 3 -x 790 -y 70 -swap {1 0 2} -defaultsOSRD
+preplace inst controller_1 -pg 1 -lvl 4 -x 1150 -y 90 -defaultsOSRD
+preplace netloc PIN_0_1 1 0 2 NJ 260 NJ
+preplace netloc axi4_lite_master_0_AMCI_MISO 1 2 3 620 350 NJ 350 1320
+preplace netloc axi_gpio_0_gpio_io_o 1 6 1 NJ 100
+preplace netloc axi_uartlite_0_tx 1 6 1 NJ 400
+preplace netloc button_0_Q 1 2 1 N 250
+preplace netloc clk_in1_0_1 1 0 1 NJ 200
+preplace netloc controller_0_AMCI_MOSI 1 3 1 N 240
+preplace netloc ext_reset_in_0_1 1 0 2 NJ 430 NJ
+preplace netloc gpio_io_i_0_1 1 0 7 NJ 320 NJ 320 590J 150 960J 170 NJ 170 NJ 170 1930
+preplace netloc system_clock_clk100mhz 1 1 5 220 330 600 330 970 360 1330 350 1640
+preplace netloc system_reset_interconnect_aresetn 1 2 3 NJ 470 NJ 470 1340
+preplace netloc system_reset_peripheral_aresetn 1 2 4 610 340 980 480 NJ 480 1650
+preplace netloc button_0_Q1 1 3 1 N 70
+preplace netloc PIN_0_2 1 0 3 NJ 60 NJ 60 NJ
+preplace netloc axi4lite_standalone_master_M_AXI 1 4 1 N 250
+preplace netloc axi_interconnect_M02_AXI 1 5 1 1630 260n
+preplace netloc smartconnect_0_M00_AXI 1 5 1 1620 70n
+preplace netloc smartconnect_0_M01_AXI 1 5 1 N 240
+preplace netloc controller1_0_M_AXI 1 4 1 1320 90n
+levelinfo -pg 1 0 120 410 790 1150 1480 1790 1950
+pagesize -pg 1 -db -bbox -sgen -150 0 2110 530
 "
 }
 {
