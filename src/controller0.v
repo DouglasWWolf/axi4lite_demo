@@ -54,9 +54,9 @@ module controller0#
 
 
 
-    //=========================================================================================================
+    //==========================================================================
     // Break out the AMCI_MISO and AMCI_MISO interfaces into discrete ports
-    //=========================================================================================================
+    //==========================================================================
     localparam AMCI_WADDR_OFFSET = 0;   localparam pa1 = AMCI_WADDR_OFFSET + AXI_ADDR_WIDTH;
     localparam AMCI_WDATA_OFFSET = pa1; localparam pa2 = AMCI_WDATA_OFFSET + AXI_DATA_WIDTH;
     localparam AMCI_RADDR_OFFSET = pa2; localparam pa3 = AMCI_RADDR_OFFSET + AXI_ADDR_WIDTH;
@@ -68,46 +68,34 @@ module controller0#
     localparam AMCI_RIDLE_OFFSET = pb2; localparam pb3 = AMCI_RIDLE_OFFSET + 1;
     localparam AMCI_WRESP_OFFSET = pb3; localparam pb4 = AMCI_WRESP_OFFSET + 2;
     localparam AMCI_RRESP_OFFSET = pb4; localparam pb5 = AMCI_RRESP_OFFSET + 2;
-
-    wire[AXI_ADDR_WIDTH-1:0] AMCI_WADDR = AMCI_MOSI[AMCI_WADDR_OFFSET +: AXI_ADDR_WIDTH];
-    wire[AXI_DATA_WIDTH-1:0] AMCI_WDATA = AMCI_MOSI[AMCI_WDATA_OFFSET +: AXI_DATA_WIDTH];
-    wire[AXI_ADDR_WIDTH-1:0] AMCI_RADDR = AMCI_MOSI[AMCI_RADDR_OFFSET +: AXI_ADDR_WIDTH];
-    wire AMCI_WRITE                     = AMCI_MOSI[AMCI_WRITE_OFFSET +: 1];
-    wire AMCI_READ                      = AMCI_MOSI[AMCI_READ_OFFSET  +: 1];
-
-    wire[AXI_DATA_WIDTH-1:0] AMCI_RDATA = AMCI_MISO[AMCI_RDATA_OFFSET +: AXI_DATA_WIDTH];
-    wire                     AMCI_WIDLE = AMCI_MISO[AMCI_WIDLE_OFFSET +: 1];
-    wire                     AMCI_RIDLE = AMCI_MISO[AMCI_RIDLE_OFFSET +: 1];
-    wire                     AMCI_WRESP = AMCI_MISO[AMCI_WRESP_OFFSET +: 2];
-    wire                     AMCI_RRESP = AMCI_MISO[AMCI_RRESP_OFFSET +: 2];
-    //=========================================================================================================
+    //==========================================================================
 
 
-    //=========================================================================================================
+    //==========================================================================
     // Wire the "write-to-slave" FSM inputs and outputs to the module ports
-    //=========================================================================================================
+    //==========================================================================
     always @(*) begin
-        amci_widle <= AMCI_WIDLE;
-        amci_wresp <= AMCI_WRESP;
+        amci_widle <= AMCI_MISO[AMCI_WIDLE_OFFSET +: 1];
+        amci_wresp <= AMCI_MISO[AMCI_WRESP_OFFSET +: 2];
     end
 
-    assign AMCI_WADDR = amci_waddr;
-    assign AMCI_WDATA = amci_wdata;
-    assign AMCI_WRITE = amci_write;
-    //=========================================================================================================
+    assign AMCI_MOSI[AMCI_WADDR_OFFSET +: AXI_ADDR_WIDTH] = amci_waddr;
+    assign AMCI_MOSI[AMCI_WDATA_OFFSET +: AXI_DATA_WIDTH] = amci_wdata;
+    assign AMCI_MOSI[AMCI_WRITE_OFFSET +: 1             ] = amci_write;
+    //==========================================================================
 
-    //=========================================================================================================
+    //==========================================================================
     // Wire the "read-from-slave" FSM inputs and outputs to the module ports
-    //=========================================================================================================
+    //==========================================================================
     always @(*) begin
-        amci_ridle <= AMCI_RIDLE;
-        amci_rresp <= AMCI_RRESP;
-        amci_rdata <= AMCI_RDATA;
+        amci_ridle <= AMCI_MISO[AMCI_RIDLE_OFFSET +: 1             ];
+        amci_rresp <= AMCI_MISO[AMCI_RRESP_OFFSET +: 2             ];
+        amci_rdata <= AMCI_MISO[AMCI_RDATA_OFFSET +: AXI_DATA_WIDTH];
     end
 
-    assign AMCI_RADDR = amci_raddr;
-    assign AMCI_READ  = amci_read;
-    //=========================================================================================================
+    assign AMCI_MOSI[AMCI_RADDR_OFFSET +: AXI_ADDR_WIDTH] = amci_raddr;
+    assign AMCI_MOSI[AMCI_READ_OFFSET  +: 1             ] = amci_read;
+    //==========================================================================
 
 
     //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
@@ -118,53 +106,91 @@ module controller0#
     //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
     //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
-    localparam AXI_ADDR_GPIO_LED = 32'h4000_0000;
-    localparam AXI_ADDR_SW_LED   = 32'h4001_0000;
-    localparam LED_BITS          = 3;
+    genvar x;
+
+    localparam AXI_ADDR_GPIO_LED  = 32'h4000_0000;
+    localparam AXI_ADDR_GPIO_SW   = 32'h4001_0000;
+    localparam AXI_ADDR_UART      = 32'h4060_0000;
+    localparam UART_TX_FIFO       = AXI_ADDR_UART + 4;
+
+    localparam LED_BITS           = 3;
+    localparam MSG_LEN            = 128;
     
-    reg[ 3:0] state;
+    reg[ 2:0] state;
     reg[ 4:0] blink_count;
     reg[31:0] counter;
+    reg[ 7:0] msg_index;
+
+    // This is message buffer we're going to print to the UART
+    reg[MSG_LEN*8-1:0] msg;
     
+    // This is a byte array, with one byte for each 8-bits in the 'msg' buffer
+    wire[7:0] msg_chr[0:MSG_LEN-1];
+    
+    // Map the 'msg_chr' byte array onto the message buffer
+    for (x=0; x<MSG_LEN; x=x+1) assign msg_chr[x] = msg[8*(MSG_LEN-1-x) +: 8];
+
     always @(posedge CLK) begin
+        amci_read  <= 0;
         amci_write <= 0;
 
+        // The counter always counts down to zero
         if (counter) counter <= counter - 1;
 
         if (RESETN == 0) begin
             state <= 0;
         end else case(state)
 
+        // If the user pushes the button, set up to print a message to the UART
         0:  if (BUTTON) begin
-                amci_raddr <= AXI_ADDR_GPIO_SW;
-                amci_read  <= 1;
-                state      <= state + 1;
+                msg_index <= 0;
+                msg       <= "Hello from push-button #1\r\n";
+                state     <= state + 1;
             end
 
-        1:  if (amci_ridle) begin
-                blink_count <= amci_rdata + 1;
-                counter     <= 0;
-                state       <= state + 1;
+        1:  begin
+                if (msg_chr[msg_index]) begin           // If this character isn't nul...
+                    amci_waddr <= UART_TX_FIFO;         //   We're going to send it to the UART
+                    amci_wdata <= msg_chr[msg_index];   //   Fetch the character we want to send
+                    amci_write <= 1;                    //   Begin the AXI-write transaction
+                    state      <= state + 1;            //   And go wait for the transaction to complete
+                end
+                msg_index <= msg_index + 1;             // In any case, point to the next character
+            end
+
+        2:  if (amci_widle) begin                       // If the write to the UART has completed...
+                if (amci_wresp[1])                      //   If a SLVERR occured (i.e, UART FIFO is full)...
+                    amci_write <= 1;                    //     retransmit the character
+                else if (msg_index == MSG_LEN) begin    //   Otherwise, if we're done sending the msg...
+                    amci_raddr <= AXI_ADDR_GPIO_SW;     //     we're going to read the GPIO switches
+                    amci_read  <= 1;                    //     start that AXI-read transaction
+                    state      <= state + 1;            //     and go wait for the read to complete
+                end else                                //   Otherwise, we're still in mid-message...
+                    state <= state -1;                  //     so go send the next byte of the message
             end
         
-        2:  if (counter == 0) begin
-                amci_waddr <= AXI_ADDR_GPIO_LED;
-                amci_wdata <= LED_BITS;
-                amci_write <= 1;
-                counter    <= CLOCK_FREQ / 10;
-                state      <= state + 1;
+        3:  if (amci_ridle) begin                       // If the read-transaction is complete...
+                blink_count <= amci_rdata + 1;          //   blink_count is derived from the switches
+                counter     <= 0;                       //   We don't want to wait for the next state
+                state       <= state + 1;               //   And go turn on the LEDs
+            end
+        
+        4:  if (counter == 0) begin                     // If the timer has expired...
+                amci_waddr <= AXI_ADDR_GPIO_LED;        //   We're going to write to the LED GPIO 
+                amci_wdata <= LED_BITS;                 //   These are the LEDs we're going to turn on
+                amci_write <= 1;                        //   Start the AXI-write transaction
+                counter    <= CLOCK_FREQ / 5;           //   Start a 1/5th of a second timer
+                state      <= state + 1;                //   And go wait for the timer to expire
             end
 
-        3:  if (counter == 0) begin
-                amci_waddr  <= AXI_ADDR_GPIO_LED;
-                amci_wdata  <= 0;
-                amci_write  <= 1;
-                counter     <= CLOCK_FREQ / 10;
-                state       <= (blink_count == 1) ? state-1 : state+1;
-                blink_count <= blink_count - 1;
+        5:  if (counter == 0) begin                     // If the timer has expired...
+                amci_waddr  <= AXI_ADDR_GPIO_LED;       //   We're going to write to the LED GPIO
+                amci_wdata  <= 0;                       //   We're going to turn off all LEDs
+                amci_write  <= 1;                       //   Start the AXI-write transaction
+                counter     <= CLOCK_FREQ / 5;          //   Start a 1/5th of a second timer
+                state       <= (blink_count == 1) ? 0 : state-1; // Should we go turn the LEDs back on?
+                blink_count <= blink_count - 1;         //   We now have one less blink to perform
             end
-
-        4:  state <= 0;
 
         endcase
     end
