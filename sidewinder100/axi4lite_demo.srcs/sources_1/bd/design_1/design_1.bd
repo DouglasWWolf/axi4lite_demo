@@ -1157,15 +1157,6 @@
         ]
       }
     },
-    "comments": {
-      "/": {
-        "comment_0": "Since the Sidewinder doesn't have input switches, we simulate them with a \"Constant\" IP",
-        "comment_1": "Since the sidewinder doesn't have switches, we simulate them with a \"Constant\" IP"
-      },
-      "/axi_uart": {
-        "comment_2": "Since the Sidewinder doesn't have input switches, we simulate them here with a \"Constant\" IP"
-      }
-    },
     "addressing": {
       "/axi4lite_standalone_master": {
         "address_spaces": {
